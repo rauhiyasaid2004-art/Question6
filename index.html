@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1>Mini Dashboard</h1>
+
+    <div class="dashboard-grid">
+
+        <div class="tile">
+            <h3>Zanzibar Weather</h3>
+            <p id="weather-tile">...</p>
+        </div>
+
+        <div class="tile">
+            <h3>USD -> TZS Rate</h3>
+            <p id="rate-tile">...</p>
+        </div>
+
+        <div class="tile">
+            <h3>Tanzania Population</h3>
+            <p id="population-tile">...</p>
+        </div>
+
+        <div class="tile">
+            <h3>Advice of the Moment</h3>
+            <p id="advice-tile">...</p>
+        </div>
+
+    </div>
+
+    <button onclick="refreshAll()">Refresh All</button>
+
+    <script>
+
+        function fetchWeather() {
+
+            document.getElementById('weather-tile').innerText = "...";
+
+            fetch('https://api.open-meteo.com/v1/forecast?latitude=-6.16&longitude=39.20&current=temperature_2m')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('weather-tile').innerText =
+                data.current.temperature_2m + " °C";
+            })
+            .catch(error => {
+                document.getElementById('weather-tile').innerText = "-";
+            });
+        }
+
+
+        function fetchExchange() {
+
+            document.getElementById('rate-tile').innerText = "...";
+
+            fetch('https://api.frankfurter.app/latest?from=USD&to=TZS')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('rate-tile').innerText =
+                data.rates.TZS + " TZS";
+            })
+            .catch(error => {
+                document.getElementById('rate-tile').innerText = "-";
+            });
+        }
+
+
+        function fetchPopulation() {
+
+            document.getElementById('population-tile').innerText = "...";
+
+            fetch('https://restcountries.com/v3.1/name/tanzania')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('population-tile').innerText =
+                data[0].population.toLocaleString() + " People";
+            })
+            .catch(error => {
+                document.getElementById('population-tile').innerText = "-";
+            });
+        }
+
+
+        function fetchAdvice() {
+
+            document.getElementById('advice-tile').innerText = "...";
+
+            fetch('https://api.adviceslip.com/advice')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('advice-tile').innerText =
+                data.slip.advice;
+            })
+            .catch(error => {
+                document.getElementById('advice-tile').innerText = "-";
+            });
+        }
+
+
+        function refreshAll() {
+            fetchWeather();
+            fetchExchange();
+            fetchPopulation();
+            fetchAdvice();
+        }
+
+
+        window.onload = refreshAll;
+
+    </script>
+
+</body>
+</html>
